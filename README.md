@@ -22,13 +22,13 @@ In the root dir:
 
 ## Run
 
-###Backend
+#### Backend
 
 In the `api` dir:
 
 `flask run`
 
-###Frontend
+#### Frontend
 
 In the root dir
 
