@@ -2,35 +2,63 @@ import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+
 function App() {
-    const [workspaces, setWorkspaces] = useState({});
+    const [resource, setResource] = useState('workspaces');
+    const [items, setItems] = useState({});
+    const [resourceId, setResourceId] = useState(0);
+    const [loading, setLoading] = useState(false);
+   
+    function displayPoints(points) {
+        return (
+          <ul>
+            {Object.keys(points).map((name) => (
+                <li>{name} : {points[name]}</li>
+            ))}
+          </ul>
+        )
+    }
+
+    function displayResources(resources) {
+        return (
+          <ul>
+            {Object.keys(resources).map((name) => (
+                <li>
+                    <a onClick={() => fetchResource(resources[name].resource_type,resources[name].gid)}>{name}</a>
+                </li>
+            ))}
+          </ul>
+        )
+    }
+
+    function fetchResource(resourceType,id) {
+       setLoading(true);
+       setResourceId(id);
+       setResource(resourceType);
+    }
 
     useEffect( () => {
-        fetch('/workspaces')
-            .then(res => res.json())
-            .then(data => {setWorkspaces(data); console.log(data)});
-    },[]);
+        setItems({});
+        if (resource == 'workspaces') {
+            fetch('/workspaces')
+                .then(res => res.json())
+                .then(data => {setItems(data); setLoading(false); console.log(data)});
+        } else {
+            fetch(`/${resource}/${resourceId}`)
+                .then(res => res.json())
+                .then(data => {setItems(data); setLoading(false); console.log(data)});
+        }
+    },[resource]);
+        
+
 
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      <ul>
-        {Object.keys(workspaces).map((name,workspace) => (
-            <li>{name}</li>
-        ))}
-      </ul>
+      {loading
+          ? <p>Loading...</p>
+          : resource == 'section' ? displayPoints(items) : displayResources(items)
+      }
       </header>
     </div>
   );
