@@ -1,7 +1,16 @@
+import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
+    const [workspaces, setWorkspaces] = useState({});
+
+    useEffect( () => {
+        fetch('/workspaces')
+            .then(res => res.json())
+            .then(data => {setWorkspaces(data); console.log(data)});
+    },[]);
+
   return (
     <div className="App">
       <header className="App-header">
@@ -17,6 +26,11 @@ function App() {
         >
           Learn React
         </a>
+      <ul>
+        {Object.keys(workspaces).map((name,workspace) => (
+            <li>{name}</li>
+        ))}
+      </ul>
       </header>
     </div>
   );
