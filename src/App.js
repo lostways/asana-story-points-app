@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
-import './App.css';
+import { Dropdown, Container } from 'semantic-ui-react';
+//import './App.css';
 
 
 function App() {
     const [resource, setResource] = useState('workspaces');
     const [items, setItems] = useState({});
     const [resourceId, setResourceId] = useState(0);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
    
     function displayPoints(points) {
         return (
@@ -20,14 +21,26 @@ function App() {
     }
 
     function displayResources(resources) {
+        // TODO improve this....
+        let resourceType = resources[Object.keys(resources)[0]].resource_type;
+
+        let options = Object.keys(resources).map((name) => ({
+            'key': name,
+            'text': name,
+            'value': resources[name].gid
+        }));
+
         return (
-          <ul>
-            {Object.keys(resources).map((name) => (
-                <li>
-                    <a onClick={() => fetchResource(resources[name].resource_type,resources[name].gid)}>{name}</a>
-                </li>
-            ))}
-          </ul>
+            <Dropdown
+                placeholder={'Select ' +  resource.toUpperCase()}
+                fluid
+                search
+                selection
+                onChange={(e,data) => fetchResource(data.resourcetype,data.value)}
+                options={options}
+                disabled={options.length === 0}
+                resourcetype={resourceType}
+              />
         )
     }
 
@@ -39,6 +52,7 @@ function App() {
 
     useEffect( () => {
         setItems({});
+
         if (resource == 'workspaces') {
             fetch('/workspaces')
                 .then(res => res.json())
@@ -48,19 +62,17 @@ function App() {
                 .then(res => res.json())
                 .then(data => {setItems(data); setLoading(false); console.log(data)});
         }
-    },[resource]);
+    },[resource, setLoading, setItems]);
         
 
 
   return (
-    <div className="App">
-      <header className="App-header">
+    <Container className="container" textAlign="center">
       {loading
-          ? <p>Loading...</p>
+          ? <h2>Loading...</h2>
           : resource == 'section' ? displayPoints(items) : displayResources(items)
       }
-      </header>
-    </div>
+    </Container>
   );
 }
 
