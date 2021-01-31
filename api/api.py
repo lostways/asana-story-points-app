@@ -1,5 +1,6 @@
 import asana
 from flask import Flask
+from flask import jsonify
 
 app = Flask(__name__)
 
@@ -12,28 +13,25 @@ client = asana.Client.access_token(app.config['ASANA_TOKEN'])
 def select_workspace():
   workspaces_out = {}
   workspaces = result = client.workspaces.get_workspaces({}, opt_pretty=True)
-  for workspace in workspaces:
-    workspaces_out[workspace.get('name')] = workspace
+  workspaces_out = [workspace for workspace in workspaces]
 
-  return workspaces_out
+  return jsonify(workspaces_out)
 
 @app.route("/workspace/<workspace_id>")
 def select_project(workspace_id):
   projects_out = {}
   projects = result = client.projects.get_projects({'workspace': workspace_id}, opt_pretty=True)
-  for project in projects:
-    projects_out[project.get('name')] = project
+  projects_out = [project for project in projects]
 
-  return projects_out
+  return jsonify(projects_out)
 
 @app.route("/project/<project_id>")
 def select_section(project_id):
   sections_out = {}
   sections = result = client.sections.get_sections_for_project(project_id, {}, opt_pretty=True)
-  for section in sections:
-    sections_out[section.get('name')] = section
+  sections_out = [section for section in sections]
 
-  return sections_out
+  return jsonify(sections_out)
 
 @app.route("/section/<section_id>")
 def get_point_counts(section_id):
@@ -43,6 +41,7 @@ def get_point_counts(section_id):
   points_sum = {}
   assignees = {}
   task_list = {}
+  points_sum_out = []
 
   tasks = client.tasks.get_tasks_for_section(section_id, {}, opt_pretty=True, fields="assignee,name,custom_fields")
 
@@ -57,8 +56,9 @@ def get_point_counts(section_id):
       if field.get('name') == points_field:
         task_list[task.get('gid')] = {'name' : task.get('name'), 'assignee': assignee.get('name'), 'points' : int(field.get('number_value') or 0)}
         points_sum[assignee.get('name')] = points_sum.get(assignee.get('name'),0) + int(field.get('number_value') or 0)
+  points_sum_out = [{'name': name, 'points': points} for (name,points) in points_sum.items()]
 
-  return points_sum
+  return jsonify(points_sum_out)
 
 if __name__ == "__main__":
   app.run()

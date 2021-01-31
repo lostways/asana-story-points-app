@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
-import { Dropdown, Container } from 'semantic-ui-react';
+import { Dropdown, Card, Container } from 'semantic-ui-react';
 //import './App.css';
 
 
@@ -12,27 +12,32 @@ function App() {
    
     function displayPoints(points) {
         return (
-          <ul>
-            {Object.keys(points).map((name) => (
-                <li>{name} : {points[name]}</li>
+          <Card.Group centered>
+            {points.map((pointSum) => (
+                <Card>
+                    <Card.Content>
+                        <Card.Header>{pointSum.name}</Card.Header>
+                        <Card.Meta>{pointSum.points}</Card.Meta>
+                    </Card.Content>
+                </Card>
             ))}
-          </ul>
+          </Card.Group>
         )
     }
 
     function displayResources(resources) {
         // TODO improve this....
-        let resourceType = resources[Object.keys(resources)[0]].resource_type;
+        let resourceType = resources ? resources[0].resource_type : "";
 
-        let options = Object.keys(resources).map((name) => ({
-            'key': name,
-            'text': name,
-            'value': resources[name].gid
+        let options = resources.map((resource) => ({
+            'key': resource.gid,
+            'text': resource.name,
+            'value': resource.gid
         }));
 
         return (
             <Dropdown
-                placeholder={'Select ' +  resource.toUpperCase()}
+                placeholder={'Select ' +  resourceType.toUpperCase()}
                 fluid
                 search
                 selection
@@ -53,7 +58,7 @@ function App() {
     useEffect( () => {
         setItems({});
 
-        if (resource == 'workspaces') {
+        if (resource === 'workspaces') {
             fetch('/workspaces')
                 .then(res => res.json())
                 .then(data => {setItems(data); setLoading(false); console.log(data)});
