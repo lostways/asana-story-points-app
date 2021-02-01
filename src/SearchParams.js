@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import ResourceDropdown from './ResourceDropdown';
-import { Form } from 'semantic-ui-react';
+import { Form,Button } from 'semantic-ui-react';
 
-function SearchParams ({setPoints}) {
+function SearchParams () {
     const [workspaces, setWorkspaces] = useState([]);
     const [projects, setProjects] = useState([]);
     const [sections, setSections] = useState([]);
+    const [sectionId, setSectionId] = useState('');
     const [loading, setLoading] = useState('workspaces'); 
 
     async function fetchResource (type, gid='') {
@@ -39,11 +41,6 @@ function SearchParams ({setPoints}) {
             .then(data => setSections(data));
     }
 
-    function getPoints(sectionId) {
-        fetchResource('section',sectionId)
-            .then(data => setPoints(data))
-    }
-
     useEffect( () => {
         fetch('/workspaces')
             .then(res => res.json())
@@ -72,9 +69,16 @@ function SearchParams ({setPoints}) {
                 <ResourceDropdown 
                     type='Section' 
                     resources={sections}
-                    updateFunction={(data) => getPoints(data)}
+                    updateFunction={(data) => setSectionId(data)}
                     loading={loading === 'project'}
                 />
+                <Button
+                    as={Link} 
+                    to={`/points/${sectionId}`} 
+                    disabled={sectionId === ''}
+                primary>
+                    Get Points
+                </Button>
             </Form>
         </div>
     )
