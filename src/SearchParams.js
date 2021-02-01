@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import ResourceDropdown from './ResourceDropdown';
+import { Form } from 'semantic-ui-react';
 
 function SearchParams ({setPoints}) {
     const [workspaces, setWorkspaces] = useState([]);
     const [projects, setProjects] = useState([]);
     const [sections, setSections] = useState([]);
-    const [loading, setLoading] = useState(''); 
+    const [loading, setLoading] = useState('workspaces'); 
 
     async function fetchResource (type, gid='') {
+        setLoading(type);
+
         let dataOut = [];
 
         await fetch(`/${type}/${gid}`)
             .then(res => res.json())
-            .then(data => {dataOut = data; console.log(data)});
+            .then(data => {
+                dataOut = data; 
+                setLoading('');
+                console.log(data);
+            });
 
         return dataOut;
     }
@@ -21,19 +28,15 @@ function SearchParams ({setPoints}) {
         setSections([]);
         setProjects([]);
 
-        setLoading('projects');
         fetchResource('workspace',workspaceId)
-            .then(data => setProjects(data))
-            .then(setLoading(''));
+            .then(data => setProjects(data));
     }
 
     function getSections(projectId) {
         setSections([]);
         
-        setLoading('sections');
         fetchResource('project',projectId)
-            .then(data => setSections(data))
-            .then(setLoading(''));
+            .then(data => setSections(data));
     }
 
     function getPoints(sectionId) {
@@ -42,33 +45,37 @@ function SearchParams ({setPoints}) {
     }
 
     useEffect( () => {
-        setLoading('workspaces');
         fetch('/workspaces')
             .then(res => res.json())
-            .then(data => {setWorkspaces(data); console.log(data)})
-            .then(setLoading(''));
+            .then(data => {
+                setWorkspaces(data);
+                setLoading('');
+                console.log(data);
+            });
     },[]);
 
     return (
         <div className="search-params">
-            <ResourceDropdown 
-                type='Workspace' 
-                resources={workspaces}
-                updateFunction={(data) => getProjects(data)}
-                loading={loading === 'workspaces'}
-            />
-            <ResourceDropdown 
-                type='Project' 
-                resources={projects}
-                updateFunction={(data) => getSections(data)}
-                loading={loading === 'projects'}
-            />
-            <ResourceDropdown 
-                type='Section' 
-                resources={sections}
-                updateFunction={(data) => getPoints(data)}
-                loading={loading === 'sections'}
-            />
+            <Form>
+                <ResourceDropdown 
+                    type='Workspace' 
+                    resources={workspaces}
+                    updateFunction={(data) => getProjects(data)}
+                    loading={loading === 'workspaces'}
+                />
+                <ResourceDropdown 
+                    type='Project' 
+                    resources={projects}
+                    updateFunction={(data) => getSections(data)}
+                    loading={loading === 'workspace'}
+                />
+                <ResourceDropdown 
+                    type='Section' 
+                    resources={sections}
+                    updateFunction={(data) => getPoints(data)}
+                    loading={loading === 'project'}
+                />
+            </Form>
         </div>
     )
 }

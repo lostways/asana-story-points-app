@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown } from 'semantic-ui-react';
+import { Dropdown, Form } from 'semantic-ui-react';
 
 function ResourceDropdown ({ type, resources, updateFunction, loading }) {
     let options = resources.map((resource) => ({
@@ -8,18 +8,22 @@ function ResourceDropdown ({ type, resources, updateFunction, loading }) {
         'value': resource.gid
     }));
 
+   
+    let id = `dropdown-for-${type.toLowerCase()}`;
     return (
-        <Dropdown
-            placeholder={`Select ${type.toUpperCase()}`}
-            fluid
-            search
-            selection
-            onChange={(e,data) => updateFunction(data.value)}
-            options={options}
-            disabled={options.length === 0}
-            resourcetype={type}
-            loading={loading}
-          />
+        <Form.Field id={id}>
+            <label htmlFor={id}>{type}</label>
+            <Dropdown
+                placeholder={`Select ${type}`}
+                fluid
+                search
+                selection
+                onChange={(e,data) => updateFunction(data.value)}
+                options={options}
+                disabled={options.length === 0}
+                loading={loading}
+              />
+        </Form.Field>
     )
 }
 
