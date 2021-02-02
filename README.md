@@ -3,7 +3,7 @@ Counts story points assigned to users in a given project section
 
 Built with [React JS](https://reactjs.org) and [Flask Python](https://flask.palletsprojects.com)
 
-![Screenshot](screen-shot.png)
+![Screenshot](screenshot.png)
 
 ## Setup
 
