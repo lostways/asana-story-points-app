@@ -1,37 +1,41 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Card } from 'semantic-ui-react';
+import { useParams, Link } from 'react-router-dom';
+import { Card, Container, Header, Loader, Button } from 'semantic-ui-react';
 
 function PointCards () {
     const [points, setPoints] = useState([]);
     
     let { sectionId } = useParams();
     
-    useEffect( () => {
+    function fetchPoints(sectionId) {
+        setPoints([])
         fetch(`/section/${sectionId}`)
             .then(res => res.json())
             .then(data => {
                 setPoints(data);
                 console.log(data);
             });
+    }
+    
+    useEffect( () => {
+        fetchPoints(sectionId)
     },[sectionId]);
 
-    if (points.length === 0) {
-        return <h1>Loading...</h1>;
-    }
-
     return (
-      <Card.Group centered>
-        {points.map((pointSum) => (
-            <Card>
-                <Card.Content>
-                    <Card.Header>{pointSum.name}</Card.Header>
-                    <Card.Meta>{pointSum.points}</Card.Meta>
-                </Card.Content>
-            </Card>
-        ))}
-      </Card.Group>
+       <Container style={{ marginTop: "3em" }}  text>
+        <Loader active={points.length === 0} />
+          <Card.Group className="point-cards" itemsPerRow={2} centered>
+            {points.map((pointSum) => (
+                <Card key={pointSum.name}>
+                    <Card.Content header={pointSum.name.toUpperCase()} />
+                    <Card.Content style={{ textAlign: 'center' }}>
+                     <Header as='h2'> {pointSum.points} </Header>
+                    </Card.Content>
+                </Card>
+            ))}
+          </Card.Group>
+        </Container>
     )
 }
 
