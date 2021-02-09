@@ -1,25 +1,14 @@
-import React from 'react';
-import { 
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link,
-} from 'react-router-dom';
-import SearchParams from './SearchParams';
-import PointCards from './PointCards';
-import { 
-    Container,
-    Header,
-    Menu,
-    Image,
-} from 'semantic-ui-react';
+import React from "react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import SearchParams from "./SearchParams";
+import PointCards from "./PointCards";
+import { Container, Header, Menu, Image } from "semantic-ui-react";
 
-import './App.css';
-
+import "./App.css";
 
 function App() {
   return (
-    <div className='App'>
+    <div className="App">
       <Menu fixed="top" borderless={true} inverted>
         <Container>
           <Menu.Item as="a" href="/" header>
@@ -33,16 +22,21 @@ function App() {
         </Container>
       </Menu>
       <Container style={{ marginTop: "7em" }} className="container">
-        <Header className='App-header' as='h1' content='Asana Story Points' textAlign='center' />
+        <Header
+          className="App-header"
+          as="h1"
+          content="Asana Story Points"
+          textAlign="center"
+        />
         <Router>
-            <Switch>
-                <Route path="/points/:sectionId">
-                    <PointCards />
-                </Route>
-                <Route path="/">
-                    <SearchParams />
-                </Route>
-            </Switch>
+          <Switch>
+            <Route path="/points/:sectionId">
+              <PointCards />
+            </Route>
+            <Route path="/">
+              <SearchParams />
+            </Route>
+          </Switch>
         </Router>
       </Container>
     </div>
