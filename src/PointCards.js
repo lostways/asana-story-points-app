@@ -23,19 +23,27 @@ function PointCards() {
   }, [sectionId]);
 
   return (
-    <Container style={{ marginTop: "3em" }} text>
-      <Loader active={points.length === 0} />
-      <Card.Group className="point-cards" itemsPerRow={2} centered>
-        {points.map((pointSum) => (
-          <Card key={pointSum.name}>
-            <Card.Content header={pointSum.name.toUpperCase()} />
-            <Card.Content style={{ textAlign: "center" }}>
-              <Header as="h2"> {pointSum.points} </Header>
-            </Card.Content>
-          </Card>
-        ))}
-      </Card.Group>
-    </Container>
+    <div className="point-cards">
+      <Header
+        className="App-header"
+        as="h1"
+        content="Points In Section"
+        textAlign="center"
+      />
+      <Container style={{ marginTop: "3em" }} text>
+        <Loader active={points.length === 0} />
+        <Card.Group className="point-cards" itemsPerRow={2} centered>
+          {points.map((pointSum) => (
+            <Card key={pointSum.name}>
+              <Card.Content header={pointSum.name.toUpperCase()} />
+              <Card.Content style={{ textAlign: "center" }}>
+                <Header as="h2"> {pointSum.points} </Header>
+              </Card.Content>
+            </Card>
+          ))}
+        </Card.Group>
+      </Container>
+    </div>
   );
 }
 

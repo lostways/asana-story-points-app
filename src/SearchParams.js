@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ResourceDropdown from "./ResourceDropdown";
-import { Form, Button } from "semantic-ui-react";
+import { Form, Button, Header } from "semantic-ui-react";
 
 function SearchParams() {
   const [workspaces, setWorkspaces] = useState([]);
@@ -51,6 +51,12 @@ function SearchParams() {
 
   return (
     <div className="search-params">
+      <Header
+        className="App-header"
+        as="h1"
+        content="Select A Project Section"
+        textAlign="center"
+      />
       <Form>
         <ResourceDropdown
           type="Workspace"

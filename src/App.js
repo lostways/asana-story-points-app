@@ -22,12 +22,6 @@ function App() {
         </Container>
       </Menu>
       <Container style={{ marginTop: "7em" }} className="container">
-        <Header
-          className="App-header"
-          as="h1"
-          content="Asana Story Points"
-          textAlign="center"
-        />
         <Router>
           <Switch>
             <Route path="/points/:sectionId">
